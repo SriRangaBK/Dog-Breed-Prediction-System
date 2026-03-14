@@ -34,7 +34,7 @@ def predict_view(request):
 
         image_file = request.FILES['image']
 
-        file_path = default_storage.save(image_file.name, image_file)
+        file_path = default_storage.save(f"uploads/{image_file.name}", image_file)
         full_path = os.path.join(default_storage.location, file_path)
 
         breed, confidence = predict_breed(full_path)

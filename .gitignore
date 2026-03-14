@@ -6,6 +6,7 @@ dist/
 build/
 backend/datasets/
 backend/venv/
+backend/paw_sense_bckend/uploads/
 
 # environment variables
 .env
