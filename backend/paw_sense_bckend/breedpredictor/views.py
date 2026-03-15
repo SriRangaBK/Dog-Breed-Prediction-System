@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.core.files.storage import default_storage
 from .predict import predict_breed
-# from google import genai
-# from dotenv import load_dotenv
+from google import genai
+from dotenv import load_dotenv
 import json
 # @api_view(['POST'])
 # def predict_view(request):
@@ -25,8 +25,8 @@ import json
 #     })
 @api_view(['POST'])
 def predict_view(request):  
-    # load_dotenv()
-    # GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
+    load_dotenv()
+    GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
     try:
 
         if 'image' not in request.FILES:
@@ -39,37 +39,30 @@ def predict_view(request):
 
         breed, confidence = predict_breed(full_path)
 
-        # client = genai.Client(api_key=GOOGLE_API_KEY)
+        client = genai.Client(api_key=GOOGLE_API_KEY)
 
-        # prompt=f"""
-        #         You are a dog expert.
-        #         Provide short information about the dog breed: {breed}
-        #         Include:
-        #         1. 2-3 lines about the breed
-        #         2. Temparment
-        #         3. Average price in India
-        #         Output:
-        #         Return the response as following
-        #         {{
-        #             "info":"...",
-        #             "temparment":"...",
-        #             "price":"..."(Give only numeric value)
-        #         }}
-        #         """
+        prompt=f"""
+                You are a dog expert.
+                Provide short information about the dog breed: {breed}
+                Include:
+                1. 2-3 lines about the breed
+                2. Temparment
+                3. Average price in India
+                Output:
+                Return the response as following
+                {{
+                    "info":"...",
+                    "temparment":"...",
+                    "price":"..."(Give only numeric value)
+                }}
+                """
 
-        # gemini_response = client.models.generate_content(
-        #     model="gemini-2.0-flash-lite", 
-        #     contents=prompt
-        # )
-        # description=gemini_response.text
+        gemini_response = client.models.generate_content(
+            model="gemini-2.0-flash-lite", 
+            contents=prompt
+        )
+        description=gemini_response.text
         
-        # description = description.replace("```json", "").replace("```", "").strip()
-        # info=json.loads(description)
-        return Response({
-            "breed": breed,
-            "confidence": round(confidence * 100, 2),
-            # "desc": info
-        })
 
     except Exception as e:
 

@@ -48,7 +48,7 @@ const handlePredict = async (file) => {
     const data = await res.json();
 
     setResultImage(data);
-    console.log(data);
+
     
   } catch (err) {
 
@@ -56,7 +56,6 @@ const handlePredict = async (file) => {
 
   }finally{
     setIsLoading(false)
-    console.log(resultimage)
   }
 };
 return(
@@ -100,20 +99,25 @@ return(
     </div>
     <div className="border-1 rounded-[10px] px-5 bg-orange-50 shadow-xs">
     <h2 className="text-2xl font-bold">DESCRIPTION:  </h2>
-    {/* {resultimage.desc.info} */} 
-    <p className="text-[15px] indent-[50px] text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente corporis, dolore molestias corrupti architecto blanditiis quae nam voluptatem eos soluta, molestiae incidunt in vero sequi quisquam, laborum dolores. Adipisci, aliquid?
+    
+    <p className="text-[15px] indent-[50px] text-justify">
+      {resultimage.desc.info} 
+      {/* Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente corporis, dolore molestias corrupti architecto blanditiis quae nam voluptatem eos soluta, molestiae incidunt in vero sequi quisquam, laborum dolores. Adipisci, aliquid? */}
     </p>
     </div>
     <div className="border-1 rounded-[10px] px-5 bg-orange-50 shadow-xs">
     <h2 className="text-2xl font-bold">TEMPARMENT: </h2>
-    {/* {resultimage.desc.temparment} */}
-    <p className="text-[15px] indent-[50px] text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores blanditiis alias numquam autem et dolore quam quidem ipsa, nostrum, perspiciatis delectus ex voluptatem dignissimos hic? Nesciunt iure culpa deleniti quos!</p>
+    
+    <p className="text-[15px] indent-[50px] text-justify">
+      {resultimage.desc.temparment}
+      {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores blanditiis alias numquam autem et dolore quam quidem ipsa, nostrum, perspiciatis delectus ex voluptatem dignissimos hic? Nesciunt iure culpa deleniti quos!*/}
+    </p> 
     </div>
 
     <div className="border-1 rounded-[10px] px-5 bg-orange-50 shadow-xs">
       <h2 className="text-2xl font-bold">PRICE: <span>₹15000</span> </h2>
     </div>
-    {/* {resultimage.desc.price} */}
+    {resultimage.desc.price}
     
     </div>
   )}
