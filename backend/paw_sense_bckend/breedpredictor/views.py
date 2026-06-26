@@ -23,10 +23,12 @@ import json
 #         "breed": breed,
 #         "confidence": round(confidence * 100, 2)
 #     })
+load_dotenv()
+GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
+client = genai.Client(api_key=GOOGLE_API_KEY)
 @api_view(['POST'])
 def predict_view(request):  
-    load_dotenv()
-    GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
+
     try:
 
         if 'image' not in request.FILES:
@@ -39,35 +41,55 @@ def predict_view(request):
 
         breed, confidence = predict_breed(full_path)
 
-        client = genai.Client(api_key=GOOGLE_API_KEY)
+        
 
-        prompt=f"""
-                You are a dog expert.
-                Provide short information about the dog breed: {breed}
-                Include:
-                1. 2-3 lines about the breed
-                2. Temparment
-                3. Average price in India
-                Output:
-                Return the response as following
-                {{
-                    "info":"...",
-                    "temparment":"...",
-                    "price":"..."(Give only numeric value)
-                }}
-                """
+        prompt = f"""
+        You are a canine nutrition expert.
+
+        Provide information for the dog breed: {breed}.
+
+        Requirements:
+        1. info: Brief description (2-3 sentences).
+        2. temperament: Comma-separated personality traits.
+        3. price: Average purchase price in India as an integer only.
+        4. diet: Mention:
+        - Recommended foods
+        - Foods to avoid
+        - Daily feeding frequency for adults
+
+        Return ONLY valid JSON.
+
+        {{
+            "info": "",
+            "temperament": "",
+            "price": 0,
+            "diet": {{
+                "recommended_foods": "",
+                "avoid_foods": "",
+                "feeding_frequency": ""
+            }}
+        }}
+        """
 
         gemini_response = client.models.generate_content(
-            model="gemini-2.0-flash-lite", 
+            model="gemini-2.5-flash", 
             contents=prompt
         )
-        description=gemini_response.text
-        
+
+        text = gemini_response.text.strip()
+
+        # Remove markdown code fences if present
+        text = text.replace("```json", "").replace("```", "").strip()
+
+        description = json.loads(text)
+
+        return Response({
+        "breed": breed,
+        "confidence": round(confidence * 100, 2),
+        "desc": description
+        })
 
     except Exception as e:
 
         print("Prediction error:", e)
 
-        return Response({
-            "error": str(e)
-        }, status=500)

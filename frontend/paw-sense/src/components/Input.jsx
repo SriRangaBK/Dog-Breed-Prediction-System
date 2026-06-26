@@ -46,9 +46,10 @@ const handlePredict = async (file) => {
     });
 
     const data = await res.json();
-
+    console.log(data);
+    
     setResultImage(data);
-
+    
     
   } catch (err) {
 
@@ -59,12 +60,13 @@ const handlePredict = async (file) => {
   }
 };
 return(
-  <>
-<div className="flex flex-col justify-center w-screen h-screen  items-center gap-6">
+<>
+<div className="flex flex-col items-center  min-h-screen gap-6 py-10">
+  
 
   <label
     htmlFor="fl"
-    className="cursor-pointer bg-yellow-600 hover:bg-yellow-700 text-white px-10 py-4 rounded-full text-2xl  font-semibold shadow-lg"
+    className="cursor-pointer order-2 bg-yellow-600 hover:bg-yellow-700 text-white px-10 py-4 rounded-full text-2xl  font-semibold shadow-lg"
   >
     Upload Image
   </label>
@@ -77,54 +79,124 @@ return(
     className="hidden"
   />
 
-  <span className="text-stone-200 text-lg">
+  <span className="text-stone-200 order-3 text-lg">
     Supports .png, .jpg
   </span>
 
 {isLoading?(
   <Loader />
-):(
-  <>
-  <div className={`flex flex-row gap-6 items-center  w-[900px]  p-[10px] ${preview ? "bg-white shadow-[5px_10px_20px_1px_rgba(0,0,0,0.5)]" : ""}   rounded-[10px] `}>
+):(<>
+{preview && (<div className="grid grid-cols-2 gap-6 w-[1400px] bg-white rounded-xl shadow-lg p-6">
+
   {preview && (
-    <div     style={{ background: `url(${preview})`, backgroundRepeat: "no-repeat", backgroundPositionX: "center", backgroundSize: "cover"}}
-    className="w-full h-100 bg-cover bg-center rounded-xl shadow-md"></div>
+    <div className="grid grid-rows-[750px_auto] gap-4">
+
+      <div
+        style={{
+          background: `url(${preview})`,
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+        }}
+        className="rounded-xl shadow-md"
+      />
+
+      <div className="border rounded-[10px] px-5 py-4 bg-orange-50 shadow-xs">
+        <div className="flex justify-between items-center">
+          <h2 className="text-4xl capitalize font-[700]">
+            {resultimage.breed}
+          </h2>
+
+          <span className="text-3xl bg-amber-100 px-4 py-1 rounded-full">
+            {resultimage.confidence}%
+          </span>
+        </div>
+      </div>
+
+    </div>
   )}
  
-  {resultimage && (
-    <div className="w-full flex flex-col gap-5">
-    <div className="w-full flex flex-row justify-between">
-      <h2 className="text-4xl capitalize font-[700]">Breed: <br />{resultimage.breed}</h2>
-      <span className="text-3xl bg-amber-100 h-10 px-4 rounded-[50px]">{resultimage.confidence}%</span>
-    </div>
-    <div className="border-1 rounded-[10px] px-5 bg-orange-50 shadow-xs">
-    <h2 className="text-2xl font-bold">DESCRIPTION:  </h2>
-    
-    <p className="text-[15px] indent-[50px] text-justify">
-      {resultimage.desc.info} 
-      {/* Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente corporis, dolore molestias corrupti architecto blanditiis quae nam voluptatem eos soluta, molestiae incidunt in vero sequi quisquam, laborum dolores. Adipisci, aliquid? */}
-    </p>
-    </div>
-    <div className="border-1 rounded-[10px] px-5 bg-orange-50 shadow-xs">
-    <h2 className="text-2xl font-bold">TEMPARMENT: </h2>
-    
-    <p className="text-[15px] indent-[50px] text-justify">
-      {resultimage.desc.temparment}
-      {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores blanditiis alias numquam autem et dolore quam quidem ipsa, nostrum, perspiciatis delectus ex voluptatem dignissimos hic? Nesciunt iure culpa deleniti quos!*/}
-    </p> 
-    </div>
+    {resultimage && (
+    <div className="grid grid-rows-[auto_auto_auto_auto] gap-4">
 
-    <div className="border-1 rounded-[10px] px-5 bg-orange-50 shadow-xs">
-      <h2 className="text-2xl font-bold">PRICE: <span>₹15000</span> </h2>
-    </div>
-    {resultimage.desc.price}
-    
+      {/* Description */}
+      <div className="border rounded-[10px] px-5 py-4 bg-orange-50 shadow-xs">
+        <h2 className="text-2xl font-bold mb-2">
+          DESCRIPTION
+        </h2>
+
+        <p className="text-[15px] indent-[50px] text-justify leading-7">
+          {resultimage.desc.info}
+        </p>
+      </div>
+
+      {/* Temperament */}
+      <div className="border rounded-[10px] px-5 py-4 bg-orange-50 shadow-xs">
+        <h2 className="text-2xl font-bold mb-2">
+          TEMPERAMENT
+        </h2>
+
+        <p className="text-[15px] indent-[50px] text-justify leading-7">
+          {resultimage.desc.temperament}
+        </p>
+      </div>
+
+      {/* Diet */}
+      <div className="border rounded-xl px-5 py-5 bg-orange-50 shadow-sm">
+        <h2 className="text-2xl font-bold text-orange-800 mb-4">
+          🍖 Dietary Preference
+        </h2>
+
+        <div className="space-y-4">
+
+          <div>
+            <h3 className="font-semibold text-lg text-orange-700">
+              Recommended Foods
+            </h3>
+
+            <p className="text-gray-700 leading-7">
+              {resultimage.desc.diet.recommended_foods}
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg text-red-600">
+              Foods to Avoid
+            </h3>
+
+            <p className="text-gray-700 leading-7">
+              {resultimage.desc.diet.avoid_foods}
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg text-green-700">
+              Feeding Frequency
+            </h3>
+
+            <p className="text-gray-700">
+              {resultimage.desc.diet.feeding_frequency}
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Price */}
+      <div className="border rounded-[10px] px-5 py-4 bg-orange-50 shadow-xs">
+        <h2 className="text-2xl font-bold">
+          PRICE: ₹{resultimage.desc.price}
+        </h2>
+      </div>
+
     </div>
   )}
+
+
   </div>
-  </>
+)}
+</>
 )}
 </div>
 </>
-)
-}
+)}
